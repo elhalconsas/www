@@ -11,18 +11,28 @@ include "../includes/header.php";
     <form action="empresa_insert.php" method="post" class="form-group">
 
         <div class="mb-3">
-            <label for="nit" class="form-label">NIT</label>
-            <input type="number" class="form-control" id="nit" name="nit" required>
+            <label for="codigo" class="form-label">codigo del equipo</label>
+            <input type="number" class="form-control" id="codigo" name="codigo" required>
         </div>
 
         <div class="mb-3">
-            <label for="nombre" class="form-label">Nombre</label>
+            <label for="nombre" class="form-label">Nombre del equipo</label>
             <input type="text" class="form-control" id="nombre" name="nombre" required>
         </div>
 
         <div class="mb-3">
             <label for="presupuesto" class="form-label">Presupuesto</label>
             <input type="number" class="form-control" id="presupuesto" name="presupuesto" required>
+        </div>
+        
+        <div class="mb-3">
+            <label for="fecha_fundacion" class="form-label">Fecha de fundación</label>
+            <input type="date" class="form-control" id="fecha_fundacion" name="fecha_fundacion" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="fecha_participacion" class="form-label">Fecha de participación</label>
+            <input type="date" class="form-control" id="fecha_participacion" name="fecha_participacion" required>
         </div>
         
         <!-- Consultar la lista de clientes y desplegarlos -->
@@ -56,14 +66,41 @@ include "../includes/header.php";
         </div>
 
         <button type="submit" class="btn btn-primary">Agregar</button>
+        <button type="submit" name="guardar_todo" class="btn btn-success ms-2">Guardar todo</button>
 
     </form>
+    
+    <?php if(isset($_GET['error']) && $_GET['error'] === 'fecha'): ?>
+        <div class="alert alert-danger mt-3" role="alert">
+            La fecha de participación no puede ser mayor que la fecha de fundación.
+        </div>
+    <?php endif; ?>
+
+    <script>
+    // Validación cliente-side: fecha_participacion no puede ser mayor que fecha_fundacion
+    (function(){
+        const form = document.querySelector('.formulario form');
+        if(!form) return;
+        form.addEventListener('submit', function(e){
+            const fFund = document.getElementById('fecha_fundacion').value;
+            const fPart = document.getElementById('fecha_participacion').value;
+            if(fFund && fPart){
+                const dFund = new Date(fFund);
+                const dPart = new Date(fPart);
+                if(dPart > dFund){
+                    e.preventDefault();
+                    alert('La fecha de participación no puede ser mayor que la fecha de fundación.');
+                }
+            }
+        });
+    })();
+    </script>
     
 </div>
 
 <?php
 // Importar el código del otro archivo
-require("empresa_select.php");
+require("equipo_select.php");
 
 // Verificar si llegan datos
 if($resultadoEmpresa and $resultadoEmpresa->num_rows > 0):
@@ -102,7 +139,7 @@ if($resultadoEmpresa and $resultadoEmpresa->num_rows > 0):
                 
                 <!-- Botón de eliminar. Debe de incluir la CP de la entidad para identificarla -->
                 <td class="text-center">
-                    <form action="empresa_delete.php" method="post">
+                    <form action="equipo_delete.php" method="post">
                         <input hidden type="text" name="nitEliminar" value="<?= $fila["nit"]; ?>">
                         <button type="submit" class="btn btn-danger">Eliminar</button>
                     </form>
