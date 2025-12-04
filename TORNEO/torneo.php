@@ -3,26 +3,26 @@ include "../includes/header.php";
 ?>
 
 <!-- TÍTULO. Cambiarlo, pero dejar especificada la analogía -->
-<h1 class="mt-3 fw-bold">Entidad análoga a CLIENTE (NOMBRE)</h1>
+<h1 class="mt-3 fw-bold">Entidad análoga a TORNEO </h1>
 
 <!-- FORMULARIO. Cambiar los campos de acuerdo a su trabajo -->
 <div class="formulario p-4 m-3 border rounded-3">
 
-    <form action="cliente_insert.php" method="post" class="form-group">
+    <form action="torneo_insert.php" method="post" class="form-group">
 
         <div class="mb-3">
-            <label for="cedula" class="form-label">Cédula</label>
-            <input type="number" class="form-control" id="cedula" name="cedula" required>
+            <label for="codigo" class="form-label">Codigo del torneo</label>
+            <input type="number" class="form-control" id="codigo" name="codigo" required>
         </div>
 
         <div class="mb-3">
-            <label for="nombre" class="form-label">Nombre</label>
+            <label for="nombre" class="form-label">Nombre del torneo</label>
             <input type="text" class="form-control" id="nombre" name="nombre" required>
         </div>
 
         <div class="mb-3">
-            <label for="celular" class="form-label">Celular</label>
-            <input type="number" class="form-control" id="celular" name="celular" required>
+            <label for="nivel_dificultad" class="form-label">Nivel de dificultad</label>
+            <input type="number" class="form-control" id="nivel_dificultad" name="nivel_dificultad" required>
         </div>
 
         <button type="submit" class="btn btn-primary">Agregar</button>
@@ -33,10 +33,10 @@ include "../includes/header.php";
 
 <?php
 // Importar el código del otro archivo
-require("cliente_select.php");
+require("torneo_select.php");
 
 // Verificar si llegan datos
-if($resultadoCliente and $resultadoCliente->num_rows > 0):
+if($resultadoTorneo and $resultadoTorneo->num_rows > 0):
 ?>
 
 <!-- MOSTRAR LA TABLA. Cambiar las cabeceras -->
@@ -47,9 +47,9 @@ if($resultadoCliente and $resultadoCliente->num_rows > 0):
         <!-- Títulos de la tabla, cambiarlos -->
         <thead class="table-dark">
             <tr>
-                <th scope="col" class="text-center">Cédula</th>
+                <th scope="col" class="text-center">Codigo</th>
                 <th scope="col" class="text-center">Nombre</th>
-                <th scope="col" class="text-center">Celular</th>
+                <th scope="col" class="text-center">Nivel de dificultad</th>
                 <th scope="col" class="text-center">Acciones</th>
             </tr>
         </thead>
@@ -58,13 +58,13 @@ if($resultadoCliente and $resultadoCliente->num_rows > 0):
 
             <?php
             // Iterar sobre los registros que llegaron
-            foreach ($resultadoCliente as $fila):
+            foreach ($resultadoTorneo as $fila):
             ?>
 
             <!-- Fila que se generará -->
             <tr>
                 <!-- Cada una de las columnas, con su valor correspondiente -->
-                <td class="text-center"><?= $fila["cedula"]; ?></td>
+                <td class="text-center"><?= $fila["codigo"]; ?></td>
                 <td class="text-center"><?= $fila["nombre"]; ?></td>
                 <td class="text-center"><?= $fila["celular"]; ?></td>
                 

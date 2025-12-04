@@ -14,7 +14,7 @@
 <body>
 <div class="container mt-5">
 
-    <h1 class='fw-bold'>Trabajo Final BD1 - (Título de su trabajo)</h1>
+    <h1 class='fw-bold'>Trabajo Final BD1 - (Sistema de Gestión de Torneos de eSports)</h1>
 
     <div class="informacion">
         <ul>
@@ -30,12 +30,12 @@
         <ul>
             <li>Samuel Abreu Velez</li>
             <li>Manuel Restrepo Sierra</li>
-            <li>Integrante 3</li>
+            <li>Alejandro Valencia Ossa</li>
         </ul>
     </div>
 
     <div class="modelo">
-        <h2 class='fw-bold'>Modelo E-R (Poner su modelo análogo)</h2>
+        <h2 class='fw-bold'>Modelo E-R</h2>
         <p></p>
     <img src="modelo.png" class="img-fluid" alt="Modelo E-R">
     </div>
@@ -43,9 +43,9 @@
     <div class="enlaces">
         <h2 class='fw-bold'>Enlaces</h2>
         <ul>
-            <li class="mb-3"><a class="btn btn-success" role="button" href="cliente/cliente.php">Entidad análoga a TORNEO</a></li>
-            <li class="mb-3"><a class="btn btn-success" role="button" href="empresa/empresa.php">Entidad análoga a EUIPO</a></li>
-            <li class="mb-3"><a class="btn btn-success" role="button" href="proyecto/proyecto.php">Entidad análoga a VIDEOJUEGO</a></li>
+            <li class="mb-3"><a class="btn btn-success" role="button" href="TORNEO/torneo.php">Entidad análoga a TORNEO</a></li>
+            <li class="mb-3"><a class="btn btn-success" role="button" href="EQUIPO/equipo.php">Entidad análoga a EQUIPO</a></li>
+            <li class="mb-3"><a class="btn btn-success" role="button" href="VIDEOJUEGO/videojuego.php">Entidad análoga a VIDEOJUEGO</a></li>
             <li class="mb-3"><a class="btn btn-primary" href="consultas/consulta1.php">Consulta 1</a></li>
             <li class="mb-3"><a class="btn btn-primary" href="consultas/consulta2.php">Consulta 2</a></li>
             <li class="mb-3"><a class="btn btn-info" role="button" href="busqueda/busqueda1.php">Búsqueda 1</a></li>
