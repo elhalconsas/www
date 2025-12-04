@@ -14,7 +14,7 @@ $result = mysqli_query($conn, $query) or die(mysqli_error($conn));
 
 if($result): 
     // Si fue exitosa, redirigirse de nuevo a la página de la entidad
-    header ("Location: cliente.php");
+    header ("Location: torneo.php");
 else:
     echo "Ha ocurrido un error al eliminar este registro";
 endif;

@@ -70,8 +70,8 @@ if($resultadoTorneo and $resultadoTorneo->num_rows > 0):
                 
                 <!-- Botón de eliminar. Debe de incluir la CP de la entidad para identificarla -->
                 <td class="text-center">
-                    <form action="cliente_delete.php" method="post">
-                        <input hidden type="text" name="cedulaEliminar" value="<?= $fila["cedula"]; ?>">
+                    <form action="torneo_delete.php" method="post">
+                        <input hidden type="text" name="codigoEliminar" value="<?= $fila["codigo"]; ?>">
                         <button type="submit" class="btn btn-danger">Eliminar</button>
                     </form>
                 </td>
