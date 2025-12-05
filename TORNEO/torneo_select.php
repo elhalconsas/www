@@ -4,9 +4,9 @@
 require('../config/conexion.php');
 
 // Query SQL a la BD
-$query = "SELECT * FROM cliente";
+$queryTorneos = "SELECT * FROM torneo ORDER BY codigo_torneo";
+$resultadoTorneos = mysqli_query($conn, $queryTorneos) or die(mysqli_error($conn));
 
-// Ejecutar la consulta
-$resultadoCliente = mysqli_query($conn, $query) or die(mysqli_error($conn));
 
 mysqli_close($conn);
+?>

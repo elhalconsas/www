@@ -12,76 +12,26 @@ include "../includes/header.php";
 
         <div class="mb-3">
             <label for="codigo" class="form-label">Código</label>
-            <input type="number" class="form-control" id="codigo" name="codigo" required>
+            <input type="number" class="form-control" id="codigo" name="codigo"   min="0" required>
         </div>
 
         <div class="mb-3">
-            <label for="fechacreacion" class="form-label">Fecha de creación</label>
-            <input type="date" class="form-control" id="fechacreacion" name="fechacreacion" required>
+            <label for="desarrollador" class="form-label">Desarrollador</label>
+            <input type="text" class="form-control" id="desarrollador" name="desarrollador" required>
         </div>
 
         <div class="mb-3">
-            <label for="valor" class="form-label">Valor</label>
-            <input type="number" class="form-control" id="valor" name="valor" required>
-        </div>
-        
-        <!-- Consultar la lista de clientes y desplegarlos -->
-        <div class="mb-3">
-            <label for="cliente" class="form-label">Cliente</label>
-            <select name="cliente" id="cliente" class="form-select">
-                
-                <!-- Option por defecto -->
-                <option value="" selected disabled hidden></option>
-
-                <?php
-                // Importar el código del otro archivo
-                require("../cliente/cliente_select.php");
-                
-                // Verificar si llegan datos
-                if($resultadoCliente):
-                    
-                    // Iterar sobre los registros que llegaron
-                    foreach ($resultadoCliente as $fila):
-                ?>
-
-                <!-- Opción que se genera -->
-                <option value="<?= $fila["cedula"]; ?>"><?= $fila["nombre"]; ?> - C.C. <?= $fila["cedula"]; ?></option>
-
-                <?php
-                        // Cerrar los estructuras de control
-                    endforeach;
-                endif;
-                ?>
-            </select>
-        </div>
-
-        <!-- Consultar la lista de empresas y desplegarlos -->
-        <div class="mb-3">
-            <label for="empresa" class="form-label">Empresa</label>
-            <select name="empresa" id="empresa" class="form-select">
-                
-                <!-- Option por defecto -->
-                <option value="" selected disabled hidden></option>
-
-                <?php
-                // Importar el código del otro archivo
-                require("../empresa/empresa_select.php");
-                
-                // Verificar si llegan datos
-                if($resultadoEmpresa):
-                    
-                    // Iterar sobre los registros que llegaron
-                    foreach ($resultadoEmpresa as $fila):
-                ?>
-
-                <!-- Opción que se genera -->
-                <option value="<?= $fila["nit"]; ?>"><?= $fila["nombre"]; ?> - NIT: <?= $fila["nit"]; ?></option>
-
-                <?php
-                        // Cerrar los estructuras de control
-                    endforeach;
-                endif;
-                ?>
+            <label for="ano_lanzamiento" class="form-label">Año de lanzamiento</label>
+            <?php
+            // Generar un select con años (desde 1950 hasta el año actual)
+            $currentYear = intval(date('Y'));
+            $startYear = 1950;
+            ?>  
+            <select class="form-select" id="ano_lanzamiento" name="ano_lanzamiento" required>
+                <option value="">Seleccione año...</option>
+                <?php for($y = $currentYear; $y >= $startYear; $y--): ?>
+                    <option value="<?= $y; ?>"><?= $y; ?></option>
+                <?php endfor; ?>
             </select>
         </div>
 
@@ -93,10 +43,10 @@ include "../includes/header.php";
 
 <?php
 // Importar el código del otro archivo
-require("proyecto_select.php");
+require("videojuego_select.php");
             
 // Verificar si llegan datos
-if($resultadoProyecto and $resultadoProyecto->num_rows > 0):
+if($resultadovideo and $resultadovideo->num_rows > 0):
 ?>
 
 <!-- MOSTRAR LA TABLA. Cambiar las cabeceras -->
@@ -108,10 +58,8 @@ if($resultadoProyecto and $resultadoProyecto->num_rows > 0):
         <thead class="table-dark">
             <tr>
                 <th scope="col" class="text-center">Código</th>
-                <th scope="col" class="text-center">Fecha de creación</th>
-                <th scope="col" class="text-center">Valor</th>
-                <th scope="col" class="text-center">Cliente</th>
-                <th scope="col" class="text-center">Empresa</th>
+                <th scope="col" class="text-center">Desarrollador</th>
+                <th scope="col" class="text-center">Año de lanzamiento</th>
                 <th scope="col" class="text-center">Acciones</th>
             </tr>
         </thead>
@@ -120,21 +68,19 @@ if($resultadoProyecto and $resultadoProyecto->num_rows > 0):
 
             <?php
             // Iterar sobre los registros que llegaron
-            foreach ($resultadoProyecto as $fila):
+            foreach ($resultadovideo as $fila):
             ?>
 
             <!-- Fila que se generará -->
             <tr>
                 <!-- Cada una de las columnas, con su valor correspondiente -->
                 <td class="text-center"><?= $fila["codigo"]; ?></td>
-                <td class="text-center"><?= $fila["fechacreacion"]; ?></td>
-                <td class="text-center">$<?= $fila["valor"]; ?></td>
-                <td class="text-center">C.C. <?= $fila["cliente"]; ?></td>
-                <td class="text-center">NIT: <?= $fila["empresa"]; ?></td>
+                <td class="text-center"><?= $fila["desarrollador"]; ?></td>
+                <td class="text-center"><?= $fila["anio_lanzamiento"]; ?></td>
                 
                 <!-- Botón de eliminar. Debe de incluir la CP de la entidad para identificarla -->
                 <td class="text-center">
-                    <form action="proyecto_delete.php" method="post">
+                    <form action="videojuego_delete.php" method="post">
                         <input hidden type="text" name="codigoEliminar" value="<?= $fila["codigo"]; ?>">
                         <button type="submit" class="btn btn-danger">Eliminar</button>
                     </form>
