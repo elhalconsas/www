@@ -13,9 +13,20 @@ $videojuego_favorito_codigo = isset($_POST['videojuego_favorito_codigo']) && $_P
 // Sanitizar
 $codigo_s = $codigo !== null ? intval($codigo) : null;
 $nombre_s = mysqli_real_escape_string($conn, trim($nombre_oficial));
-$fecha_primer_s = $fecha_primer_juego !== null ? mysqli_real_escape_string($conn, $fecha_primer_juego) : null;
-$fecha_ultimo_s = $fecha_ultimo_juego !== null ? mysqli_real_escape_string($conn, $fecha_ultimo_juego) : null;
+// Formatear fechas a AAAA/MM/DD si existen
+$fecha_primer_s = null;
+$fecha_ultimo_s = null;
+if ($fecha_primer_juego !== null && $fecha_primer_juego !== '') {
+	$fecha_primer_s = date('Y/m/d', strtotime($fecha_primer_juego));
+	$fecha_primer_s = mysqli_real_escape_string($conn, $fecha_primer_s);
+}
+if ($fecha_ultimo_juego !== null && $fecha_ultimo_juego !== '') {
+	$fecha_ultimo_s = date('Y/m/d', strtotime($fecha_ultimo_juego));
+	$fecha_ultimo_s = mysqli_real_escape_string($conn, $fecha_ultimo_s);
+}
 $videojuego_favorito_codigo_s = $videojuego_favorito_codigo !== null ? intval($videojuego_favorito_codigo) : null;
+$codigo_torneo = isset($_POST['codigo_torneo']) && $_POST['codigo_torneo'] !== '' ? intval($_POST['codigo_torneo']) : null;
+$codigo_torneo_s = $codigo_torneo !== null ? intval($codigo_torneo) : null;
 
 // Validación server-side: fecha_ultimo_juego no puede ser menor que fecha_primer_juego
 if($fecha_primer_s && $fecha_ultimo_s){
@@ -28,22 +39,27 @@ if($fecha_primer_s && $fecha_ultimo_s){
 }
 
 // Insertar en la tabla `equipo` (ajusta nombres de columnas según tu esquema)
-// Si no se seleccionó videojuego favorito, insertar NULL en esa columna.
+// Requerir que el torneo esté seleccionado
+if ($codigo_torneo_s === null) {
+	header('Location: equipo.php?error=torneo');
+	exit;
+}
+
 if ($videojuego_favorito_codigo_s === null) {
-	$stmt = $conn->prepare("INSERT INTO `equipo` (`codigo`, `nombre_oficial`, `fecha_primer_juego`, `fecha_ultimo_juego`, `videojuego_favorito_codigo`) VALUES (?, ?, ?, ?, NULL)");
-	if(!$stmt){
-		die('Error al preparar la consulta: ' . mysqli_error($conn));
-	}
-	// Bind: i = int, s = string, s = string, s = string
-	$stmt->bind_param('isss', $codigo_s, $nombre_s, $fecha_primer_s, $fecha_ultimo_s);
-	$exec = $stmt->execute();
-} else {
-	$stmt = $conn->prepare("INSERT INTO `equipo` (`codigo`, `nombre_oficial`, `fecha_primer_juego`, `fecha_ultimo_juego`, `videojuego_favorito_codigo`) VALUES (?, ?, ?, ?, ?)");
+	$stmt = $conn->prepare("INSERT INTO `equipo` (`codigo`, `nombre_oficial`, `fecha_primer_juego`, `fecha_ultimo_juego`, `codigo_torneo`, `videojuego_favorito_codigo`) VALUES (?, ?, ?, ?, ?, NULL)");
 	if(!$stmt){
 		die('Error al preparar la consulta: ' . mysqli_error($conn));
 	}
 	// Bind: i = int, s = string, s = string, s = string, i = int
-	$stmt->bind_param('isssi', $codigo_s, $nombre_s, $fecha_primer_s, $fecha_ultimo_s, $videojuego_favorito_codigo_s);
+	$stmt->bind_param('isssi', $codigo_s, $nombre_s, $fecha_primer_s, $fecha_ultimo_s, $codigo_torneo_s);
+	$exec = $stmt->execute();
+} else {
+	$stmt = $conn->prepare("INSERT INTO `equipo` (`codigo`, `nombre_oficial`, `fecha_primer_juego`, `fecha_ultimo_juego`, `codigo_torneo`, `videojuego_favorito_codigo`) VALUES (?, ?, ?, ?, ?, ?)");
+	if(!$stmt){
+		die('Error al preparar la consulta: ' . mysqli_error($conn));
+	}
+	// Bind: i = int, s = string, s = string, s = string, i = int, i = int
+	$stmt->bind_param('isssii', $codigo_s, $nombre_s, $fecha_primer_s, $fecha_ultimo_s, $codigo_torneo_s, $videojuego_favorito_codigo_s);
 	$exec = $stmt->execute();
 }
 if($exec){

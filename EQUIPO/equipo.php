@@ -32,6 +32,22 @@ include "../includes/header.php";
         
         <!-- Consultar la lista de clientes y desplegarlos -->
         <div class="mb-3">
+            <label for="codigo_torneo" class="form-label">Pertenece al torneo (código)</label>
+            <select class="form-select mb-3" id="codigo_torneo" name="codigo_torneo" required>
+                <option value="">Seleccione torneo...</option>
+                <?php
+                // Cargar opciones desde TORNEO/torneo_select.php
+                require_once('../TORNEO/torneo_select.php');
+                if(isset($resultadoTorneos) && $resultadoTorneos->num_rows > 0):
+                    while($t = mysqli_fetch_assoc($resultadoTorneos)):
+                ?>
+                    <option value="<?= htmlspecialchars($t['codigo_torneo']); ?>"><?= htmlspecialchars($t['codigo_torneo']); ?> - <?= htmlspecialchars($t['nombre_oficial'] ?? ''); ?></option>
+                <?php
+                    endwhile;
+                endif;
+                ?>
+            </select>
+
             <label for="videojuego_favorito_codigo" class="form-label">Videojuego favorito (código)</label>
             <select class="form-select" id="videojuego_favorito_codigo" name="videojuego_favorito_codigo">
                 <option value="">Seleccione videojuego...</option>
@@ -49,7 +65,7 @@ include "../includes/header.php";
             </select>
         </div>
 
-        <button type="submit" class="btn btn-primary">Agregar</button>
+        <!-- <button type="submit" class="btn btn-primary">Agregar</button> -->
         <button type="submit" name="guardar_todo" class="btn btn-success ms-2">Guardar todo</button>
 
     </form>
@@ -102,6 +118,7 @@ if(isset($resultadoEquipo) && $resultadoEquipo and $resultadoEquipo->num_rows > 
                 <th scope="col" class="text-center">Nombre</th>
                 <th scope="col" class="text-center">Fecha primer juego</th>
                 <th scope="col" class="text-center">Fecha último juego</th>
+                <th scope="col" class="text-center">Código Torneo</th>
                 <th scope="col" class="text-center">Videojuego código</th>
                 <th scope="col" class="text-center">Acciones</th>
             </tr>
@@ -121,6 +138,7 @@ if(isset($resultadoEquipo) && $resultadoEquipo and $resultadoEquipo->num_rows > 
                 <td class="text-center"><?= htmlspecialchars($fila["nombre_oficial"]); ?></td>
                 <td class="text-center"><?= htmlspecialchars($fila["fecha_primer_juego"] ?? ''); ?></td>
                 <td class="text-center"><?= htmlspecialchars($fila["fecha_ultimo_juego"] ?? ''); ?></td>
+                <td class="text-center"><?= htmlspecialchars($fila["codigo_torneo"] ?? ''); ?></td>
                 <td class="text-center"><?= htmlspecialchars($fila["videojuego_favorito_codigo"] ?? ''); ?></td>
                 
                 <!-- Botón de eliminar. Debe de incluir la CP de la entidad para identificarla -->

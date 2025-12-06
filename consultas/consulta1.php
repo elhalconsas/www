@@ -2,33 +2,30 @@
 include "../includes/header.php";
 ?>
 
-<!-- TÍTULO. Cambiarlo, pero dejar especificada la analogía -->
-<h1 class="mt-3 fw-bold">Consulta 1</h1>
+<!-- TÍTULO. Consulta requerida -->
+<h1 class="mt-3 fw-bold">Consulta 1 — Videojuego favorito en torneos distintos</h1>
 
-<p class="mt-3 fw-bold">Caso general:</p>
+<p class="mt-3 fw-bold">Descripción:</p>
 <p class="mt-3">
-    Sea sumavalor la suma de los valores de todos los proyectos asociados con un cliente.
-    El primer botón debe mostrar la cédula y el nombre de cada uno de los clientes 
-    que cumple todas las siguientes condiciones: es gerente, tiene sumavalor > 1000,
-    ha revisado al menos 3 proyectos y la empresa que gerencia no ha revisado ni un
-    solo proyecto.
-</p>
-
-<p class="mt-3 fw-bold">Caso particular:</p>
-<p class="mt-3">
-    Sea sumavalor la suma de los valores de todos los proyectos asociados con un cliente.
-    El primer botón debe mostrar la cédula y el nombre de cada uno de los clientes 
-    que cumple todas las siguientes condiciones: es gerente, tiene sumavalor > 1000,
-    ha revisado al menos 3 proyectos y la empresa que gerencia no ha revisado ni un
-    solo proyecto.
+    Mostrar el videojuego (código y desarrollador) que es favorito de más equipos
+    que están inscritos en torneos cuya base NO coincide con ese mismo videojuego.
+    Se mostrará también la cantidad de equipos que cumplen la condición.
 </p>
 
 <?php
 // Crear conexión con la BD
 require('../config/conexion.php');
 
-// Query SQL a la BD -> Crearla acá (No está completada, cambiarla a su contexto y a su analogía)
-$query = "SELECT cedula, nombre FROM cliente";
+// Query SQL a la BD: contar por videojuego las apariciones en equipos inscritos en
+// torneos cuya columna `videojuego_codigo` es distinta al videojuego favorito.
+$query = "SELECT v.codigo AS videojuego_codigo, v.desarrollador, COUNT(*) AS equipos_contados\n"
+    . "FROM videojuego v\n"
+    . "JOIN equipo e ON e.videojuego_favorito_codigo = v.codigo\n"
+    . "JOIN torneo t ON e.codigo_torneo = t.codigo_torneo\n"
+    . "WHERE (t.videojuego_codigo IS NULL OR t.videojuego_codigo <> v.codigo)\n"
+    . "GROUP BY v.codigo, v.desarrollador\n"
+    . "ORDER BY equipos_contados DESC\n"
+    . "LIMIT 1";
 
 // Ejecutar la consulta
 $resultadoC1 = mysqli_query($conn, $query) or die(mysqli_error($conn));
@@ -49,8 +46,9 @@ if($resultadoC1 and $resultadoC1->num_rows > 0):
         <!-- Títulos de la tabla, cambiarlos -->
         <thead class="table-dark">
             <tr>
-                <th scope="col" class="text-center">Cédula</th>
-                <th scope="col" class="text-center">Nombre</th>
+                <th scope="col" class="text-center">Código videojuego</th>
+                <th scope="col" class="text-center">Desarrollador</th>
+                <th scope="col" class="text-center">Equipos (conteo)</th>
             </tr>
         </thead>
 
@@ -64,8 +62,9 @@ if($resultadoC1 and $resultadoC1->num_rows > 0):
             <!-- Fila que se generará -->
             <tr>
                 <!-- Cada una de las columnas, con su valor correspondiente -->
-                <td class="text-center"><?= $fila["cedula"]; ?></td>
-                <td class="text-center"><?= $fila["nombre"]; ?></td>
+                <td class="text-center"><?= htmlspecialchars($fila["videojuego_codigo"]); ?></td>
+                <td class="text-center"><?= htmlspecialchars($fila["desarrollador"]); ?></td>
+                <td class="text-center"><?= htmlspecialchars($fila["equipos_contados"]); ?></td>
             </tr>
 
             <?php
