@@ -3,12 +3,12 @@ include "../includes/header.php";
 ?>
 
 <!-- TÍTULO. Cambiarlo, pero dejar especificada la analogía -->
-<h1 class="mt-3 fw-bold">Entidad análoga a PROYECTO (NOMBRE)</h1>
+<h1 class="mt-3 fw-bold">Entidad VIDEOJUEGO</h1>
 
 <!-- FORMULARIO. Cambiar los campos de acuerdo a su trabajo -->
 <div class="formulario p-4 m-3 border rounded-3">
 
-    <form action="proyecto_insert.php" method="post" class="form-group">
+    <form action="videojuego_insert.php" method="post" class="form-group">
 
         <div class="mb-3">
             <label for="codigo" class="form-label">Código</label>
@@ -21,19 +21,17 @@ include "../includes/header.php";
         </div>
 
         <div class="mb-3">
-            <label for="ano_lanzamiento" class="form-label">Año de lanzamiento</label>
-            <?php
-            // Generar un select con años (desde 1950 hasta el año actual)
-            $currentYear = intval(date('Y'));
-            $startYear = 1950;
-            ?>  
-            <select class="form-select" id="ano_lanzamiento" name="ano_lanzamiento" required>
+            <label for="anio_lanzamiento" class="form-label">Año de lanzamiento</label>
+            <?php $currentYear = intval(date('Y')); $startYear = 1950; ?>
+            <select class="form-select" id="anio_lanzamiento" name="anio_lanzamiento" required>
                 <option value="">Seleccione año...</option>
                 <?php for($y = $currentYear; $y >= $startYear; $y--): ?>
-                    <option value="<?= $y; ?>"><?= $y; ?></option>
+                    <option value="<?= $y; ?>" <?= ($y === $currentYear ? 'selected' : ''); ?>><?= $y; ?></option>
                 <?php endfor; ?>
             </select>
         </div>
+
+        
 
         <button type="submit" class="btn btn-primary">Agregar</button>
 
@@ -77,7 +75,6 @@ if($resultadovideo and $resultadovideo->num_rows > 0):
                 <td class="text-center"><?= $fila["codigo"]; ?></td>
                 <td class="text-center"><?= $fila["desarrollador"]; ?></td>
                 <td class="text-center"><?= $fila["anio_lanzamiento"]; ?></td>
-                
                 <!-- Botón de eliminar. Debe de incluir la CP de la entidad para identificarla -->
                 <td class="text-center">
                     <form action="videojuego_delete.php" method="post">

@@ -4,7 +4,7 @@ require('../config/conexion.php');
 ?>
 
 <!-- TÍTULO. Cambiarlo, pero dejar especificada la analogía -->
-<h1 class="mt-3 fw-bold">TORNEO (superentidad con subtipos EQUIPO / INDIVIDUAL)</h1>
+<h1 class="mt-3 fw-bold">TORNEO (supertipo con subtipos EQUIPO / INDIVIDUAL)</h1>
 
 <!-- FORMULARIO. Cambiar los campos de acuerdo a su trabajo -->
 <div class="formulario p-4 m-3 border rounded-3">
@@ -21,6 +21,7 @@ require('../config/conexion.php');
             <label for="nombre_oficial" class="form-label">Nombre oficial</label>
             <input type="text" class="form-control" id="nombre_oficial" name="nombre_oficial" required>
         </div>
+       
 
         <div class="mb-3">
             <label for="nivel_dificultad" class="form-label">Nivel de dificultad</label>
@@ -61,19 +62,14 @@ require('../config/conexion.php');
                 <input type="number" class="form-control" id="numero_max_jugadores" name="numero_max_jugadores" min="2">
             </div>
 
-            <div class="mb-3">
-                <label for="formato_competicion" class="form-label">
-                    Formato de competición 
-                </label>
-                <input type="text" class="form-control" id="formato_competicion" name="formato_competicion">
-            </div>
+            
         </div>
 
         <div id="subtipo_individual" class="subtipo-section" style="display:none;">
             <!-- Atributo de subtipo INDIVIDUAL -->
             <div class="mb-3">
                 <label class="form-label d-block">
-                    Fases iniciales (solo si es individual)
+                    formato de las competiciones   (1 VS 1) 
                 </label>
                 <select class="form-select" id="fases_iniciales_online" name="fases_iniciales_online">
                     <option value="">Seleccione...</option>
@@ -83,23 +79,58 @@ require('../config/conexion.php');
             </div>
         </div>
 
+        
+        <div class="mb-3">
+            <label for="videojuego_codigo" class="form-label">Videojuego (código)</label>
+            <select class="form-select" id="videojuego_codigo" name="videojuego_codigo">
+                <option value="">Seleccione videojuego...</option>
+                <?php
+                // Cargar opciones desde VIDEOJUEGO/videojuego_select.php
+                require_once('../VIDEOJUEGO/videojuego_select.php');
+                if(isset($resultadovideo) && $resultadovideo->num_rows > 0):
+                    while($v = mysqli_fetch_assoc($resultadovideo)):
+                ?>
+                    <option value="<?= htmlspecialchars($v['codigo']); ?>"><?= htmlspecialchars($v['codigo']); ?> - <?= htmlspecialchars($v['desarrollador'] ?? $v['nombre'] ?? ''); ?></option>
+                <?php
+                    endwhile;
+                endif;
+                ?>
+            </select>
+        </div>
+
         <script>
         (function(){
             const equipoRadio = document.getElementById('tipo_equipo');
             const individualRadio = document.getElementById('tipo_individual');
             const sectEquipo = document.getElementById('subtipo_equipo');
             const sectInd = document.getElementById('subtipo_individual');
-
+            const numMaxInput = document.getElementById('numero_max_jugadores');
+            const form = document.querySelector('.formulario form');
+           
+          
+           
             function updateSections(){
                 if(equipoRadio.checked){
                     sectEquipo.style.display = '';
                     sectInd.style.display = 'none';
+                    if(numMaxInput){
+                        // permitir editar número máximo cuando es por equipos
+                        numMaxInput.disabled = false;
+                        // si estaba en 2 (por haber seleccionado Individual antes), limpiar para que el usuario pueda ingresar
+                        if(numMaxInput.value === '2') numMaxInput.value = '';
+                    }
                 } else if(individualRadio.checked){
                     sectEquipo.style.display = 'none';
                     sectInd.style.display = '';
+                    if(numMaxInput){
+                        // en tipo Individual no se envía el número máximo: limpiar y deshabilitar
+                        numMaxInput.value = '';
+                        numMaxInput.disabled = true;
+                    }
                 } else {
                     sectEquipo.style.display = 'none';
                     sectInd.style.display = 'none';
+                    if(numMaxInput) numMaxInput.disabled = false;
                 }
             }
 
@@ -114,9 +145,10 @@ require('../config/conexion.php');
                 individualRadio.checked = true;
             }
 
-            // Ejecutar al cargar
-            updateSections();
-        })();
+                 // Ejecutar al cargar
+                 updateSections();
+
+                     })();
         </script>
 
         <?php if(isset($_GET['error']) && $_GET['error'] === 'duplicado'): ?>
@@ -124,7 +156,6 @@ require('../config/conexion.php');
                 El código del torneo ya existe. Por favor elija un código único.
             </div>
         <?php endif; ?>
-
 
       
 
@@ -155,9 +186,10 @@ if($resultadoTorneos and $resultadoTorneos->num_rows > 0):
                 <th scope="col" class="text-center">Nivel</th>
                 <th scope="col" class="text-center">Tipo</th>
                 <th scope="col" class="text-center">N.º máx. jugadores</th>
-                <th scope="col" class="text-center">Formato</th>
-                <th scope="col" class="text-center">Fases iniciales</th>
+                <th scope="col" class="text-center">Formato de las competiciones (1 VS 1)</th>
+                <th scope="col" class="text-center">Videojuego código</th>
                 <th scope="col" class="text-center">Acciones</th>
+
             </tr>
         </thead>
 
@@ -176,10 +208,21 @@ if($resultadoTorneos and $resultadoTorneos->num_rows > 0):
                 <td class="text-center"><?= htmlspecialchars($fila["nivel_dificultad"]); ?></td>
                 <td class="text-center"><?= htmlspecialchars($fila["tipo_torneo"]); ?></td>
                 <td class="text-center"><?= htmlspecialchars($fila["numero_max_jugadores"] ?? ''); ?></td>
-                <td class="text-center"><?= htmlspecialchars($fila["formato_competicion"] ?? ''); ?></td>
-                <td class="text-center"><?= htmlspecialchars($fila["fases_iniciales_online"] ?? ''); ?></td>
-
+                <?php
+                $fases_val = $fila['fases_iniciales_online'] ?? '';
+                // Normalizar valores antiguos (1/0) a etiquetas legibles
+                if ($fases_val === '1' || $fases_val === 1 || $fases_val === 'online') {
+                    $fases_text = 'online';
+                } elseif ($fases_val === '0' || $fases_val === 0 || $fases_val === 'presencial') {
+                    $fases_text = 'presencial';
+                } else {
+                    $fases_text = $fases_val;
+                }
+                ?>
+                <td class="text-center"><?= htmlspecialchars($fases_text); ?></td>
+                <td class="text-center"><?= htmlspecialchars($fila["videojuego_codigo"] ?? ''); ?></td>
                 <!-- Botón de eliminar. Debe de incluir la CP de la entidad para identificarla -->
+
                 <td class="text-center">
                     <form action="torneo_delete.php" method="post">
                         <input hidden type="text" name="codigoEliminar" value="<?= htmlspecialchars($fila["codigo_torneo"]); ?>">
