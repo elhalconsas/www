@@ -21,13 +21,13 @@ include "../includes/header.php";
         </div>
 
         <div class="mb-3">
-            <label for="fecha_primer_juego" class="form-label">Fecha del primer juego</label>
-            <input type="date" class="form-control" id="fecha_primer_juego" name="fecha_primer_juego" required>
+            <label for="fecha_primer_partida" class="form-label">Fecha del primer juego</label>
+            <input type="date" class="form-control" id="fecha_primer_partida" name="fecha_primer_partida" required>
         </div>
         
         <div class="mb-3">
-            <label for="fecha_ultimo_juego" class="form-label">Fecha del último juego</label>
-            <input type="date" class="form-control" id="fecha_ultimo_juego" name="fecha_ultimo_juego" required>
+            <label for="fecha_ultimo_partida" class="form-label">Fecha del último juego</label>
+            <input type="date" class="form-control" id="fecha_ultimo_partida" name="fecha_ultimo_partida" required>
         </div>
         
         <!-- Consultar la lista de clientes y desplegarlos -->
@@ -136,8 +136,8 @@ if(isset($resultadoEquipo) && $resultadoEquipo and $resultadoEquipo->num_rows > 
                 <!-- Cada una de las columnas, con su valor correspondiente -->
                 <td class="text-center"><?= htmlspecialchars($fila["codigo"]); ?></td>
                 <td class="text-center"><?= htmlspecialchars($fila["nombre_oficial"]); ?></td>
-                <td class="text-center"><?= htmlspecialchars($fila["fecha_primer_juego"] ?? ''); ?></td>
-                <td class="text-center"><?= htmlspecialchars($fila["fecha_ultimo_juego"] ?? ''); ?></td>
+                <td class="text-center"><?= htmlspecialchars($fila["fecha_primer_partida"] ?? ''); ?></td>
+                <td class="text-center"><?= htmlspecialchars($fila["fecha_ultimo_partida"] ?? ''); ?></td>
                 <td class="text-center"><?= htmlspecialchars($fila["codigo_torneo"] ?? ''); ?></td>
                 <td class="text-center"><?= htmlspecialchars($fila["videojuego_favorito_codigo"] ?? ''); ?></td>
                 

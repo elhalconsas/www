@@ -1,8 +1,8 @@
 CREATE TABLE equipo (
     codigo INT(10) NOT NULL,
     nombre_oficial VARCHAR(50) NOT NULL UNIQUE,
-    fecha_primer_juego VARCHAR(20),
-    fecha_ultimo_juego VARCHAR(20),
+    fecha_primer_partida VARCHAR(20),
+    fecha_ultimo_partida VARCHAR(20),
     codigo_torneo INT(10) NOT NULL ,
     videojuego_favorito_codigo INT(10) NOT NULL,
     PRIMARY KEY (codigo, codigo_torneo),
