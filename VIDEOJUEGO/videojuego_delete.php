@@ -4,10 +4,13 @@
 require('../config/conexion.php');
 
 // Sacar la CP de la entidad
-$codigoEliminar = $_POST["codigoEliminar"];
+$codigoEliminar = isset($_POST['codigoEliminar']) ? $_POST['codigoEliminar'] : null;
 
-// Query SQL a la BD
-$query = "DELETE FROM proyecto WHERE codigo = '$codigoEliminar'";
+// Sanitizar entrada
+$codigoEliminar_s = mysqli_real_escape_string($conn, $codigoEliminar);
+
+// Query SQL a la BD - eliminar desde la tabla correcta `videojuego`
+$query = "DELETE FROM videojuego WHERE codigo = '$codigoEliminar_s'";
 
 // Ejecutar consulta
 $result = mysqli_query($conn, $query) or die(mysqli_error($conn));

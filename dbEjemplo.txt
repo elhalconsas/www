@@ -1,23 +1,33 @@
-CREATE TABLE cliente(
-  cedula INT(10) PRIMARY KEY,
-  nombre VARCHAR(50) NOT NULL,
-  celular INT(10) NOT NULL
+CREATE TABLE equipo (
+    codigo INT(10) NOT NULL,
+    nombre_oficial VARCHAR(50) NOT NULL UNIQUE,
+    fecha_primer_juego VARCHAR(20),
+    fecha_ultimo_juego VARCHAR(20),
+    codigo_torneo INT(10) NOT NULL ,
+    videojuego_favorito_codigo INT(10) NOT NULL,
+    PRIMARY KEY (codigo, codigo_torneo),
+    FOREIGN KEY (codigo_torneo)
+        REFERENCES torneo(codigo),
+    FOREIGN KEY (videojuego_favorito_codigo)
+        REFERENCES videojuego(codigo)
 );
 
-CREATE TABLE empresa(
-  nit INT(10) PRIMARY KEY,
-  nombre VARCHAR(50) NOT NULL,
-  presupuesto INT(10) NOT NULL,
-  cliente INT(10),
-  FOREIGN KEY(cliente) REFERENCES cliente(cedula)
+
+CREATE TABLE videojuego (
+    codigo INT(10) PRIMARY KEY,
+    desarrollador VARCHAR(50) NOT NULL,
+    anio_lanzamiento INT(10) NOT NULL       
 );
 
-CREATE TABLE proyecto(
-  codigo INT(10) PRIMARY KEY,
-  fechacreacion DATE NOT NULL,
-  valor INT(10) NOT NULL,
-  cliente INT(10),
-  empresa INT(10),
-  FOREIGN KEY(cliente) REFERENCES cliente(cedula),
-  FOREIGN KEY(empresa) REFERENCES empresa(nit)
-);
+
+CREATE TABLE torneo (
+    codigo_torneo INT(10) PRIMARY KEY,
+    nombre_oficial VARCHAR(50) NOT NULL UNIQUE,
+    nivel_dificultad INT(10) NOT NULL,
+    tipo_torneo VARCHAR(50) NOT NULL CHECK (tipo_torneo IN ('EQUIPO', 'INDIVIDUAL')),
+    numero_max_jugadores INT(10),
+    fases_iniciales_online VARCHAR(10),
+    videojuego_codigo INT(10),
+    FOREIGN KEY (videojuego_codigo)
+        REFERENCES videojuego(codigo)
+); 

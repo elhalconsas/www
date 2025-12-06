@@ -3,11 +3,11 @@
 // Crear conexión con la BD
 require('../config/conexion.php');
 
-// Sacar la CP de la entidad
-$nitEliminar = $_POST["nitEliminar"];
+// Sacar la clave primaria de la entidad enviada desde el formulario
+$codigoEliminar = isset($_POST['codigoEliminar']) ? $_POST['codigoEliminar'] : null;
 
-// Query SQL a la BD
-$query = "DELETE FROM empresa WHERE nit = '$nitEliminar'";
+// Query SQL a la BD (tabla `equipo` con columna `codigo`)
+$query = "DELETE FROM equipo WHERE codigo = '" . mysqli_real_escape_string($conn, $codigoEliminar) . "'";
 
 // Ejecutar consulta
 $result = mysqli_query($conn, $query) or die(mysqli_error($conn));

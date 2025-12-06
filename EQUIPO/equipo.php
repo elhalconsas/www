@@ -3,12 +3,12 @@ include "../includes/header.php";
 ?>
 
 <!-- TÍTULO. Cambiarlo, pero dejar especificada la analogía -->
-<h1 class="mt-3 fw-bold">Entidad análoga a EMPRESA (NOMBRE)</h1>
+<h1 class="mt-3 fw-bold">Entidad Equipo</h1>
 
 <!-- FORMULARIO. Cambiar los campos de acuerdo a su trabajo -->
 <div class="formulario p-4 m-3 border rounded-3">
 
-    <form action="empresa_insert.php" method="post" class="form-group">
+    <form action="equipo_insert.php" method="post" class="form-group">
 
         <div class="mb-3">
             <label for="codigo" class="form-label">codigo del equipo</label>
@@ -16,50 +16,34 @@ include "../includes/header.php";
         </div>
 
         <div class="mb-3">
-            <label for="nombre" class="form-label">Nombre del equipo</label>
-            <input type="text" class="form-control" id="nombre" name="nombre" required>
+            <label for="nombre_oficial" class="form-label">Nombre del equipo</label>
+            <input type="text" class="form-control" id="nombre_oficial" name="nombre_oficial" required>
         </div>
 
         <div class="mb-3">
-            <label for="presupuesto" class="form-label">Presupuesto</label>
-            <input type="number" class="form-control" id="presupuesto" name="presupuesto" required>
+            <label for="fecha_primer_juego" class="form-label">Fecha del primer juego</label>
+            <input type="date" class="form-control" id="fecha_primer_juego" name="fecha_primer_juego" required>
         </div>
         
         <div class="mb-3">
-            <label for="fecha_fundacion" class="form-label">Fecha de fundación</label>
-            <input type="date" class="form-control" id="fecha_fundacion" name="fecha_fundacion" required>
-        </div>
-
-        <div class="mb-3">
-            <label for="fecha_participacion" class="form-label">Fecha de participación</label>
-            <input type="date" class="form-control" id="fecha_participacion" name="fecha_participacion" required>
+            <label for="fecha_ultimo_juego" class="form-label">Fecha del último juego</label>
+            <input type="date" class="form-control" id="fecha_ultimo_juego" name="fecha_ultimo_juego" required>
         </div>
         
         <!-- Consultar la lista de clientes y desplegarlos -->
         <div class="mb-3">
-            <label for="cliente" class="form-label">Cliente</label>
-            <select name="cliente" id="cliente" class="form-select">
-                
-                <!-- Option por defecto -->
-                <option value="" selected disabled hidden></option>
-
+            <label for="videojuego_favorito_codigo" class="form-label">Videojuego favorito (código)</label>
+            <select class="form-select" id="videojuego_favorito_codigo" name="videojuego_favorito_codigo">
+                <option value="">Seleccione videojuego...</option>
                 <?php
-                // Importar el código del otro archivo
-                require("../cliente/cliente_select.php");
-                
-                // Verificar si llegan datos
-                if($resultadoCliente):
-                    
-                    // Iterar sobre los registros que llegaron
-                    foreach ($resultadoCliente as $fila):
+                // Cargar opciones desde VIDEOJUEGO/videojuego_select.php
+                require_once('../VIDEOJUEGO/videojuego_select.php');
+                if(isset($resultadovideo) && $resultadovideo->num_rows > 0):
+                    while($v = mysqli_fetch_assoc($resultadovideo)):
                 ?>
-
-                <!-- Opción que se genera -->
-                <option value="<?= $fila["cedula"]; ?>"><?= $fila["nombre"]; ?> - C.C. <?= $fila["cedula"]; ?></option>
-
+                    <option value="<?= htmlspecialchars($v['codigo']); ?>"><?= htmlspecialchars($v['codigo']); ?> - <?= htmlspecialchars($v['desarrollador'] ?? $v['nombre'] ?? ''); ?></option>
                 <?php
-                        // Cerrar los estructuras de control
-                    endforeach;
+                    endwhile;
                 endif;
                 ?>
             </select>
@@ -103,7 +87,7 @@ include "../includes/header.php";
 require("equipo_select.php");
 
 // Verificar si llegan datos
-if($resultadoEmpresa and $resultadoEmpresa->num_rows > 0):
+if(isset($resultadoEquipo) && $resultadoEquipo and $resultadoEquipo->num_rows > 0):
 ?>
 
 <!-- MOSTRAR LA TABLA. Cambiar las cabeceras -->
@@ -114,10 +98,11 @@ if($resultadoEmpresa and $resultadoEmpresa->num_rows > 0):
         <!-- Títulos de la tabla, cambiarlos -->
         <thead class="table-dark">
             <tr>
-                <th scope="col" class="text-center">NIT</th>
+                <th scope="col" class="text-center">Código</th>
                 <th scope="col" class="text-center">Nombre</th>
-                <th scope="col" class="text-center">Presupuesto</th>
-                <th scope="col" class="text-center">Cliente</th>
+                <th scope="col" class="text-center">Fecha primer juego</th>
+                <th scope="col" class="text-center">Fecha último juego</th>
+                <th scope="col" class="text-center">Videojuego código</th>
                 <th scope="col" class="text-center">Acciones</th>
             </tr>
         </thead>
@@ -126,21 +111,22 @@ if($resultadoEmpresa and $resultadoEmpresa->num_rows > 0):
 
             <?php
             // Iterar sobre los registros que llegaron
-            foreach ($resultadoEmpresa as $fila):
+            foreach ($resultadoEquipo as $fila):
             ?>
 
             <!-- Fila que se generará -->
             <tr>
                 <!-- Cada una de las columnas, con su valor correspondiente -->
-                <td class="text-center"><?= $fila["nit"]; ?></td>
-                <td class="text-center"><?= $fila["nombre"]; ?></td>
-                <td class="text-center">$<?= $fila["presupuesto"]; ?></td>
-                <td class="text-center">C.C. <?= $fila["cliente"]; ?></td>
+                <td class="text-center"><?= htmlspecialchars($fila["codigo"]); ?></td>
+                <td class="text-center"><?= htmlspecialchars($fila["nombre_oficial"]); ?></td>
+                <td class="text-center"><?= htmlspecialchars($fila["fecha_primer_juego"] ?? ''); ?></td>
+                <td class="text-center"><?= htmlspecialchars($fila["fecha_ultimo_juego"] ?? ''); ?></td>
+                <td class="text-center"><?= htmlspecialchars($fila["videojuego_favorito_codigo"] ?? ''); ?></td>
                 
                 <!-- Botón de eliminar. Debe de incluir la CP de la entidad para identificarla -->
                 <td class="text-center">
                     <form action="equipo_delete.php" method="post">
-                        <input hidden type="text" name="nitEliminar" value="<?= $fila["nit"]; ?>">
+                        <input hidden type="text" name="codigoEliminar" value="<?= htmlspecialchars($fila["codigo"]); ?>">
                         <button type="submit" class="btn btn-danger">Eliminar</button>
                     </form>
                 </td>
