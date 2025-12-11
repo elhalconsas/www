@@ -6,6 +6,6 @@
 $host = "localhost";
 $user = "root";
 $pass = "";
-$db = "control_de_esport";
+$db = "torneo";
 
 $conn = new mysqli($host, $user, $pass, $db) or die("Error al conectar a la DB " . mysqli_error($link));

@@ -6,8 +6,8 @@ require('../config/conexion.php');
 // Sacar los datos del formulario. Cada input se identifica con su "name"
 $codigo = isset($_POST['codigo']) ? intval($_POST['codigo']) : null;
 $nombre_oficial = isset($_POST['nombre_oficial']) ? $_POST['nombre_oficial'] : '';
-$fecha_primer_partida = isset($_POST['fecha_primer_partida']) && $_POST['fecha_primer_partida'] !== '' ? $_POST['fecha_primer_partida'] : null;
-$fecha_ultimo_partida = isset($_POST['fecha_ultimo_partida']) && $_POST['fecha_ultimo_partida'] !== '' ? $_POST['fecha_ultimo_partida'] : null;
+$fecha_primera_partida = isset($_POST['fecha_primera_partida']) && $_POST['fecha_primera_partida'] !== '' ? $_POST['fecha_primera_partida'] : null;
+$fecha_ultima_partida = isset($_POST['fecha_ultima_partida']) && $_POST['fecha_ultima_partida'] !== '' ? $_POST['fecha_ultima_partida'] : null;
 $videojuego_favorito_codigo = isset($_POST['videojuego_favorito_codigo']) && $_POST['videojuego_favorito_codigo'] !== '' ? intval($_POST['videojuego_favorito_codigo']) : null;
 
 // Sanitizar
@@ -16,19 +16,19 @@ $nombre_s = mysqli_real_escape_string($conn, trim($nombre_oficial));
 // Formatear fechas a AAAA/MM/DD si existen
 $fecha_primer_s = null;
 $fecha_ultimo_s = null;
-if ($fecha_primer_partida !== null && $fecha_primer_partida !== '') {
-	$fecha_primer_s = date('Y/m/d', strtotime($fecha_primer_partida));
+if ($fecha_primera_partida !== null && $fecha_primera_partida !== '') {
+	$fecha_primer_s = date('Y/m/d', strtotime($fecha_primera_partida));
 	$fecha_primer_s = mysqli_real_escape_string($conn, $fecha_primer_s);
 }
-if ($fecha_ultimo_partida !== null && $fecha_ultimo_partida !== '') {
-	$fecha_ultimo_s = date('Y/m/d', strtotime($fecha_ultimo_partida));
+if ($fecha_ultima_partida !== null && $fecha_ultima_partida !== '') {
+	$fecha_ultimo_s = date('Y/m/d', strtotime($fecha_ultima_partida));
 	$fecha_ultimo_s = mysqli_real_escape_string($conn, $fecha_ultimo_s);
 }
 $videojuego_favorito_codigo_s = $videojuego_favorito_codigo !== null ? intval($videojuego_favorito_codigo) : null;
 $codigo_torneo = isset($_POST['codigo_torneo']) && $_POST['codigo_torneo'] !== '' ? intval($_POST['codigo_torneo']) : null;
 $codigo_torneo_s = $codigo_torneo !== null ? intval($codigo_torneo) : null;
 
-// Validación server-side: fecha_ultimo_partida no puede ser menor que fecha_primer_partida
+// Validación server-side: fecha_ultima_partida no puede ser menor que fecha_primera_partida
 if($fecha_primer_s && $fecha_ultimo_s){
 	$tPrim = strtotime($fecha_primer_s);
 	$tUlt = strtotime($fecha_ultimo_s);
@@ -46,7 +46,7 @@ if ($codigo_torneo_s === null) {
 }
 
 if ($videojuego_favorito_codigo_s === null) {
-	$stmt = $conn->prepare("INSERT INTO `equipo` (`codigo`, `nombre_oficial`, `fecha_primer_partida`, `fecha_ultimo_partida`, `codigo_torneo`, `videojuego_favorito_codigo`) VALUES (?, ?, ?, ?, ?, NULL)");
+	$stmt = $conn->prepare("INSERT INTO `equipo` (`codigo`, `nombre_oficial`, `fecha_primera_partida`, `fecha_ultima_partida`, `codigo_torneo`, `videojuego_favorito_codigo`) VALUES (?, ?, ?, ?, ?, NULL)");
 	if(!$stmt){
 		die('Error al preparar la consulta: ' . mysqli_error($conn));
 	}
@@ -54,7 +54,7 @@ if ($videojuego_favorito_codigo_s === null) {
 	$stmt->bind_param('isssi', $codigo_s, $nombre_s, $fecha_primer_s, $fecha_ultimo_s, $codigo_torneo_s);
 	$exec = $stmt->execute();
 } else {
-	$stmt = $conn->prepare("INSERT INTO `equipo` (`codigo`, `nombre_oficial`, `fecha_primer_partida`, `fecha_ultimo_partida`, `codigo_torneo`, `videojuego_favorito_codigo`) VALUES (?, ?, ?, ?, ?, ?)");
+	$stmt = $conn->prepare("INSERT INTO `equipo` (`codigo`, `nombre_oficial`, `fecha_primera_partida`, `fecha_ultima_partida`, `codigo_torneo`, `videojuego_favorito_codigo`) VALUES (?, ?, ?, ?, ?, ?)");
 	if(!$stmt){
 		die('Error al preparar la consulta: ' . mysqli_error($conn));
 	}

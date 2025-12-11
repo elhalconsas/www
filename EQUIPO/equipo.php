@@ -21,13 +21,13 @@ include "../includes/header.php";
         </div>
 
         <div class="mb-3">
-            <label for="fecha_primer_partida" class="form-label">Fecha del primer juego</label>
-            <input type="date" class="form-control" id="fecha_primer_partida" name="fecha_primer_partida" required>
+            <label for="fecha_primera_partida" class="form-label">Fecha del primer juego</label>
+            <input type="date" class="form-control" id="fecha_primera_partida" name="fecha_primera_partida" required>
         </div>
         
         <div class="mb-3">
-            <label for="fecha_ultimo_partida" class="form-label">Fecha del último juego</label>
-            <input type="date" class="form-control" id="fecha_ultimo_partida" name="fecha_ultimo_partida" required>
+            <label for="fecha_ultima_partida" class="form-label">Fecha del último juego</label>
+            <input type="date" class="form-control" id="fecha_ultima_partida" name="fecha_ultima_partida" required>
         </div>
         
         <!-- Consultar la lista de clientes y desplegarlos -->
@@ -38,10 +38,20 @@ include "../includes/header.php";
                 <?php
                 // Cargar opciones desde TORNEO/torneo_select.php
                 require_once('../TORNEO/torneo_select.php');
+                
                 if(isset($resultadoTorneos) && $resultadoTorneos->num_rows > 0):
                     while($t = mysqli_fetch_assoc($resultadoTorneos)):
+
+                        // --- FILTRO: Solo mostrar si es tipo EQUIPO ---
+                        // Si el campo tipo_torneo existe y NO es 'EQUIPO', saltamos este registro.
+                        if (isset($t['tipo_torneo']) && $t['tipo_torneo'] !== 'EQUIPO') {
+                            continue; 
+                        }
+                        // ---------------------------------------------
                 ?>
-                    <option value="<?= htmlspecialchars($t['codigo_torneo']); ?>"><?= htmlspecialchars($t['codigo_torneo']); ?> - <?= htmlspecialchars($t['nombre_oficial'] ?? ''); ?></option>
+                    <option value="<?= htmlspecialchars($t['codigo_torneo']); ?>">
+                        <?= htmlspecialchars($t['codigo_torneo']); ?> - <?= htmlspecialchars($t['nombre_oficial'] ?? ''); ?>
+                    </option>
                 <?php
                     endwhile;
                 endif;
@@ -114,12 +124,12 @@ if(isset($resultadoEquipo) && $resultadoEquipo and $resultadoEquipo->num_rows > 
         <!-- Títulos de la tabla, cambiarlos -->
         <thead class="table-dark">
             <tr>
-                <th scope="col" class="text-center">Código</th>
-                <th scope="col" class="text-center">Nombre</th>
-                <th scope="col" class="text-center">Fecha primer juego</th>
-                <th scope="col" class="text-center">Fecha último juego</th>
-                <th scope="col" class="text-center">Código Torneo</th>
-                <th scope="col" class="text-center">Videojuego código</th>
+                <th scope="col" class="text-center">codigo</th>
+                <th scope="col" class="text-center">nombre_oficial</th>
+                <th scope="col" class="text-center">fecha_primera_partida</th>
+                <th scope="col" class="text-center">fecha_ultima_partida</th>
+                <th scope="col" class="text-center">codigo_torneo</th>
+                <th scope="col" class="text-center">videojuego_favorito_codigo</th>
                 <th scope="col" class="text-center">Acciones</th>
             </tr>
         </thead>
@@ -136,8 +146,8 @@ if(isset($resultadoEquipo) && $resultadoEquipo and $resultadoEquipo->num_rows > 
                 <!-- Cada una de las columnas, con su valor correspondiente -->
                 <td class="text-center"><?= htmlspecialchars($fila["codigo"]); ?></td>
                 <td class="text-center"><?= htmlspecialchars($fila["nombre_oficial"]); ?></td>
-                <td class="text-center"><?= htmlspecialchars($fila["fecha_primer_partida"] ?? ''); ?></td>
-                <td class="text-center"><?= htmlspecialchars($fila["fecha_ultimo_partida"] ?? ''); ?></td>
+                <td class="text-center"><?= htmlspecialchars($fila["fecha_primera_partida"] ?? ''); ?></td>
+                <td class="text-center"><?= htmlspecialchars($fila["fecha_ultima_partida"] ?? ''); ?></td>
                 <td class="text-center"><?= htmlspecialchars($fila["codigo_torneo"] ?? ''); ?></td>
                 <td class="text-center"><?= htmlspecialchars($fila["videojuego_favorito_codigo"] ?? ''); ?></td>
                 

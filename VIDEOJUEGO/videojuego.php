@@ -55,9 +55,9 @@ if($resultadovideo and $resultadovideo->num_rows > 0):
         <!-- Títulos de la tabla, cambiarlos -->
         <thead class="table-dark">
             <tr>
-                <th scope="col" class="text-center">Código</th>
-                <th scope="col" class="text-center">Desarrollador</th>
-                <th scope="col" class="text-center">Año de lanzamiento</th>
+                <th scope="col" class="text-center">codigo</th>
+                <th scope="col" class="text-center">desarrollador</th>
+                <th scope="col" class="text-center">año_lanzamiento</th>
                 <th scope="col" class="text-center">Acciones</th>
             </tr>
         </thead>

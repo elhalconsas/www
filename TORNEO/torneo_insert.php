@@ -10,7 +10,7 @@ $nivel = isset($_POST['nivel_dificultad']) ? intval($_POST['nivel_dificultad']) 
 $tipo = isset($_POST['tipo_torneo']) ? $_POST['tipo_torneo'] : '';
 $num_max = null;
 // Si el tipo es Individual, no enviamos número máximo (se dejará NULL en la BD).
-if (isset($_POST['tipo_torneo']) && $_POST['tipo_torneo'] === 'Individual') {
+if (isset($_POST['tipo_torneo']) && $_POST['tipo_torneo'] === 'INDIVIDUAL') {
 	$num_max = null;
 } else {
 	$num_max = isset($_POST['numero_max_jugadores']) && $_POST['numero_max_jugadores'] !== '' ? $_POST['numero_max_jugadores'] : null;
